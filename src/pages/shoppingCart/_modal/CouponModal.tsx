@@ -52,9 +52,13 @@ const CouponModal = ({
       setCouponError('');
       onClose();
     } catch (error) {
-      const err = error as Error & { status?: number };
+      const err = error as Error & { status?: number; errorCode?: string };
       const msg = err.message || '유효하지 않은 쿠폰 번호입니다.';
-      if (err.status !== 409) setCouponError(msg);
+      const TOAST_ONLY_CODES = ['COUPON_CODE_IN_USE', 'COUPON_ALREADY_APPLIED', 'CART_NOT_ACTIVE'];
+      const isToastOnly = err.errorCode
+        ? TOAST_ONLY_CODES.includes(err.errorCode)
+        : err.status === 409;
+      if (!isToastOnly) setCouponError(msg);
       toast.error(msg, {
         icon: <img src={IMAGE_CONSTANTS.CHECK} alt="" />,
         closeButton: false,
