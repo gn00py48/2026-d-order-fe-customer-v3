@@ -1,6 +1,4 @@
-import { BoothAdItem } from '../service/BoothInfo';
-
-export const MOCK_BOOTH_DATA: BoothAdItem[] = [
+export const MOCK_BOOTH_DATA = [
   // 5/26 (화) - 총 9개
   {
     boothName: '이은',
@@ -8,7 +6,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '이은',
     boothAllTable: 50,
     boothUsageTable: 44,
-    location: '원흥관 4층 입구-1',
+    location: '원흥관 4층 입구',
     dates: ['2026-05-26'],
   },
   {
@@ -17,7 +15,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '산업시스템공학과(동국대)',
     boothAllTable: 50,
     boothUsageTable: 10,
-    location: '원흥관 주차장-1',
+    location: '원흥관 주차장',
     dates: ['2026-05-26'],
   },
   {
@@ -26,7 +24,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '손짓사랑회',
     boothAllTable: 50,
     boothUsageTable: 40,
-    location: '만해광장-4',
+    location: '만해광장',
     dates: ['2026-05-26', '2026-05-27'],
   },
   {
@@ -35,7 +33,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '그리고 그림',
     boothAllTable: 50,
     boothUsageTable: 50,
-    location: '만해광장-4',
+    location: '만해광장',
     dates: ['2026-05-26'],
   },
   {
@@ -44,7 +42,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '에너지신소재공학과',
     boothAllTable: 50,
     boothUsageTable: 27,
-    location: '만해광장-4',
+    location: '만해광장',
     dates: ['2026-05-26'],
   },
   {
@@ -53,7 +51,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '화공생물공학과',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '만해광장-4',
+    location: '만해광장',
     dates: ['2026-05-26'],
   },
   {
@@ -62,7 +60,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '중어중문학과',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '명진관(법학관 방면)-2',
+    location: '명진관(법학관 방면)',
     dates: ['2026-05-26'],
   },
   {
@@ -71,7 +69,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '동국대학교 영어영문학부',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '명진관(법학관 방면)-2',
+    location: '명진관(법학관 방면)',
     dates: ['2026-05-26'],
   },
   {
@@ -80,7 +78,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '국제통상학과',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '사과관 3층 앞-1',
+    location: '사과관 3층 앞',
     dates: ['2026-05-26', '2026-05-27'],
   },
 
@@ -91,7 +89,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '글로벌무역학과',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '카페ING-1',
+    location: '카페ING',
     dates: ['2026-05-27'],
   },
   {
@@ -100,7 +98,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '동국대학교 건축공학부',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '만해광장-4',
+    location: '만해광장',
     dates: ['2026-05-27'],
   },
   {
@@ -109,7 +107,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '멋쟁이사자처럼',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '만해광장-4',
+    location: '만해광장',
     dates: ['2026-05-27'],
   },
   {
@@ -118,7 +116,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: 'FC 엘레펜테',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '만해광장-4',
+    location: '만해광장',
     dates: ['2026-05-27', '2026-05-28'],
   },
   {
@@ -127,7 +125,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '사학과',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '명진관(법학관 방면)-1',
+    location: '명진관(법학관 방면)',
     dates: ['2026-05-27'],
   },
   {
@@ -136,7 +134,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '사회복지학과',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '경영관 앞-1',
+    location: '경영관 앞',
     dates: ['2026-05-27', '2026-05-28'],
   },
 
@@ -147,7 +145,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '미래융합대학',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '카페ING-1',
+    location: '카페ING',
     dates: ['2026-05-28'],
   },
   {
@@ -156,7 +154,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '프론티어',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '만해광장-2',
+    location: '만해광장',
     dates: ['2026-05-28'],
   },
   {
@@ -165,7 +163,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '바이오시스템대학',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '다향관 앞-1',
+    location: '다향관 앞',
     dates: ['2026-05-28'],
   },
   {
@@ -174,7 +172,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '시스템반도체학부',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '법학관(다향관 방면)-1',
+    location: '법학관(다향관 방면)',
     dates: ['2026-05-28'],
   },
   {
@@ -183,7 +181,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '첨단융합대학',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '법학관(대운동장 방면)-1',
+    location: '법학관(대운동장 방면)',
     dates: ['2026-05-28'],
   },
   {
@@ -192,7 +190,7 @@ export const MOCK_BOOTH_DATA: BoothAdItem[] = [
     hostName: '사회복지상담학과',
     boothAllTable: 50,
     boothUsageTable: 0,
-    location: '사과대 주차장-1',
+    location: '사과대 주차장',
     dates: ['2026-05-28'],
   },
 ];

@@ -1,10 +1,10 @@
 import styled, { keyframes } from 'styled-components';
 import { IMAGE_CONSTANTS } from '@constants/ImageConstants';
-// import { useNavigate } from 'react-router-dom';
-// import { ROUTE_CONSTANTS } from '@constants/RouteConstants';
+import { useNavigate } from 'react-router-dom';
+import { ROUTE_CONSTANTS } from '@constants/RouteConstants';
 
 const ErrorPage = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <Wrapper>
@@ -15,10 +15,9 @@ const ErrorPage = () => {
           <ErrorTitle>페이지를 찾을 수 없어요.</ErrorTitle>
           <ErrorSubTitle>요청하신 페이지가 존재하지 않아요!</ErrorSubTitle>
         </TextWrapper>
-        {/* <HomeButton onClick={() => navigate(ROUTE_CONSTANTS.LOGIN)}>
+        <HomeButton onClick={() => navigate(ROUTE_CONSTANTS.LOGIN)}>
           홈으로 돌아가기
         </HomeButton>
-         */}
       </ContentsWrapper>
     </Wrapper>
   );

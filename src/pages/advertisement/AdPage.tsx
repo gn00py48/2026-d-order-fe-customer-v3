@@ -1,11 +1,9 @@
 import styled, { keyframes, css } from 'styled-components';
 import { IMAGE_CONSTANTS } from '@constants/ImageConstants';
 import ContactBoothCard from './_components/ContactBoothCard';
-import NoContactBoothCard from './_components/NoContactBoothCard';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BoothAdItem } from './service/BoothInfo';
-import { NO_CONTACT_BOOTH_INFO } from './const/noContactBoothInfo';
-import { MOCK_BOOTH_DATA } from './const/mockBoothData';
+import { BoothAdItem, fetchBoothAds } from './service/BoothInfo';
+
 
 type Status = 'AVAILABLE' | 'SOON' | 'FULL';
 
@@ -14,6 +12,13 @@ const DATE_OPTIONS = [
   { label: '5/27 (수)', value: '2026-05-27' },
   { label: '5/28 (목)', value: '2026-05-28' },
 ] as const;
+
+const getTodayStr = () => {
+  const t = new Date();
+  const mm = String(t.getMonth() + 1).padStart(2, '0');
+  const dd = String(t.getDate()).padStart(2, '0');
+  return `${t.getFullYear()}-${mm}-${dd}`;
+};
 
 const getBoothStatus = (remaining: number, capacity: number): Status => {
   if (capacity <= 0 || remaining <= 0) return 'FULL';
@@ -38,68 +43,64 @@ const getInitialDate = (): string => {
 
 const AdPage = () => {
   const [selectedDate, setSelectedDate] = useState<string>(getInitialDate());
-  const [booths] = useState<BoothAdItem[]>(MOCK_BOOTH_DATA);
+  const [booths, setBooths] = useState<BoothAdItem[]>([]);
   const [isReloading, setIsReloading] = useState<boolean>(false);
   const boothWrapperRef = useRef<HTMLDivElement>(null);
 
+  const isComingSoon = selectedDate !== '2026-05-26' && selectedDate > getTodayStr();
+
+  const fetchData = async (date: string) => {
+    try {
+      const data = await fetchBoothAds(date);
+      setBooths(data);
+    } catch {
+      setBooths([]);
+    }
+  };
+
   useEffect(() => {
+    fetchData(selectedDate);
     boothWrapperRef.current?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [selectedDate]);
 
-  const onReload = () => {
+  const onReload = async () => {
     if (isReloading) return;
     setIsReloading(true);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    await fetchData(selectedDate);
+    setIsReloading(false);
   };
 
-  const filteredBooths = useMemo(
-    () =>
-      booths.filter((b) =>
-        Array.isArray(b.dates) ? b.dates.includes(selectedDate) : false
-      ),
-    [booths, selectedDate]
-  );
-
-  const noContactBooths = useMemo(
-    () =>
-      NO_CONTACT_BOOTH_INFO.find((b) => b.date === selectedDate)?.booths ?? [],
-    [selectedDate]
-  );
-
-  const computedBooths = useMemo(() => {
-    return filteredBooths.map((b) => {
-      const capacity = b.boothAllTable ?? 0;
-      const used = b.boothUsageTable ?? 0;
-      const remaining = Math.max(0, capacity - used);
-      const status = getBoothStatus(remaining, capacity);
-      return {
-        hostName: b.hostName ?? '',
-        boothImage: b.boothImage ?? '',
-        location: b.location ?? '',
-        remaining,
-        capacity,
-        status,
-      };
-    });
-  }, [filteredBooths]);
-
-  // 만석 카드는 하단으로 정렬
+  // location 같은 곳끼리 + 만석은 하단
   const contactBoothsToRender = useMemo(() => {
-    return [...computedBooths].sort((a, b) => {
-      if (a.status === 'FULL' && b.status !== 'FULL') return 1;
-      if (a.status !== 'FULL' && b.status === 'FULL') return -1;
-      return 0;
-    });
-  }, [computedBooths]);
+    return booths
+      .map((b) => {
+        const capacity = b.totalTable ?? 0;
+        const remaining = b.remainingTable ?? 0;
+        const status = getBoothStatus(remaining, capacity);
+        return {
+          hostName: b.boothName,
+          boothImage: '',
+          location: b.location ?? '',
+          remaining,
+          capacity,
+          status,
+        };
+      })
+      .sort((a, b) => {
+        if (a.status === 'FULL' && b.status !== 'FULL') return 1;
+        if (a.status !== 'FULL' && b.status === 'FULL') return -1;
+        return a.location.localeCompare(b.location, 'ko');
+      });
+  }, [booths]);
 
   return (
     <Wrapper>
       {/* 헤더 영역 */}
       <HeaderSection>
         <HeaderRow>
-          <AdLogo src={IMAGE_CONSTANTS.AD_LOGO} alt='D-order 로고' />
+          <AdLogoLink href='https://2602-d-order-home-page.vercel.app/' target='_blank' rel='noopener noreferrer'>
+            <AdLogo src={IMAGE_CONSTANTS.AD_LOGO} alt='D-order 로고' />
+          </AdLogoLink>
           <ReloadButton
             onClick={onReload}
             disabled={isReloading}
@@ -127,23 +128,28 @@ const AdPage = () => {
       </DateTabsSection>
 
       {/* 부스 카드 리스트 */}
-      <BoothListWrapper ref={boothWrapperRef}>
-        {contactBoothsToRender.map((b, idx) => (
-          <ContactBoothCard
-            key={`${b.hostName}-${idx}`}
-            hostName={b.hostName}
-            boothImage={b.boothImage}
-            location={b.location}
-            remaining={b.remaining}
-            capacity={b.capacity}
-            status={b.status}
-          />
-        ))}
-
-        {noContactBooths.map((b, idx) => (
-          <NoContactBoothCard key={`${b}-${idx}`} boothName={b} />
-        ))}
-      </BoothListWrapper>
+      <BoothListContainer>
+        <BoothListWrapper ref={boothWrapperRef} $locked={isComingSoon}>
+          {contactBoothsToRender.map((b, idx) => (
+            <ContactBoothCard
+              key={`${b.hostName}-${idx}`}
+              hostName={b.hostName}
+              boothImage={b.boothImage}
+              location={b.location}
+              remaining={b.remaining}
+              capacity={b.capacity}
+              status={b.status}
+            />
+          ))}
+        </BoothListWrapper>
+        {isComingSoon && (
+          <ComingSoonOverlay>
+            <ComingSoonCard>
+              <ComingSoonText>COMING SOON</ComingSoonText>
+            </ComingSoonCard>
+          </ComingSoonOverlay>
+        )}
+      </BoothListContainer>
 
       {/* 하단 인스타그램 연락처 */}
       <ContactInfoWrapper
@@ -196,11 +202,15 @@ const HeaderRow = styled.div`
   width: 100%;
 `;
 
+const AdLogoLink = styled.a`
+  display: flex;
+  flex-shrink: 0;
+`;
+
 const AdLogo = styled.img`
   height: 36px;
   width: auto;
   object-fit: contain;
-  flex-shrink: 0;
 `;
 
 const ReloadButton = styled.button<{ $isReloading?: boolean }>`
@@ -253,7 +263,8 @@ const DateTab = styled.button<{ $active?: boolean }>`
   padding: 10px 8px;
   background: transparent;
   border: none;
-  border-bottom: 2px solid ${({ $active }) => ($active ? '#FF6E3F' : 'transparent')};
+  border-bottom: 2px solid
+    ${({ $active }) => ($active ? '#FF6E3F' : 'transparent')};
   cursor: pointer;
 
   font-family: 'SUIT', sans-serif;
@@ -263,14 +274,20 @@ const DateTab = styled.button<{ $active?: boolean }>`
   white-space: nowrap;
 `;
 
-const BoothListWrapper = styled.div`
+const BoothListContainer = styled.div`
+  position: relative;
+  width: 100%;
+  flex: 1 1 0%;
+  min-height: 0;
+`;
+
+const BoothListWrapper = styled.div<{ $locked?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  flex: 1 1 0%;
-  min-height: 0;
-  overflow-y: auto;
+  height: 100%;
+  overflow-y: ${({ $locked }) => ($locked ? 'hidden' : 'auto')};
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   gap: 16px;
@@ -282,6 +299,36 @@ const BoothListWrapper = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+
+const ComingSoonOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 16px 0;
+  box-sizing: border-box;
+  pointer-events: none;
+`;
+
+const ComingSoonCard = styled.div`
+  width: 91%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+`;
+
+const ComingSoonText = styled.p`
+  ${({ theme }) => theme.fonts.ExtraBold24};
+  color: ${({ theme }) => theme.colors.Orange01};
+  letter-spacing: 4px;
+  margin: 0;
 `;
 
 const ContactInfoWrapper = styled.div`
